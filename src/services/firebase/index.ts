@@ -1,5 +1,17 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  serverTimestamp,
+} from "firebase/database";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+  signOut,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY,
@@ -11,6 +23,28 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+  apiKey: "AIzaSyDIXs3VFeMXb-VnFCKb_X1daCPv3rbHPCU",
+  authDomain: "chat-6a952.firebaseapp.com",
+  databaseURL: "https://chat-6a952-default-rtdb.firebaseio.com",
+  projectId: "chat-6a952",
+  storageBucket: "chat-6a952.appspot.com",
+  messagingSenderId: "213193185620",
+  appId: "1:213193185620:web:1708dd3cb5f6edcccf10c1",
+});
+
 const db = getDatabase(app);
-export { ref, set, onValue, db, app };
+const auth = getAuth(app);
+
+export {
+  ref,
+  set,
+  onValue,
+  db,
+  app,
+  auth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  serverTimestamp,
+};
