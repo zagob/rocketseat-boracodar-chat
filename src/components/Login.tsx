@@ -2,7 +2,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { useContext } from "react";
 
 export function Login() {
-  const { signInWithGoogle, user } = useContext(AuthContext);
+  const { signInWithGoogle } = useContext(AuthContext);
 
   return (
     <div className="absolute flex flex-col gap-2 text-xl">

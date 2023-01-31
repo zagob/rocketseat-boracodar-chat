@@ -21,16 +21,16 @@ export function Message({
       })}
     >
       <span className="text-xs text-[#E1E1E6]">
-        {name} - {date}
+        {!isMessageOther ? "Você" : name} - {date}
       </span>
-      <text
-        className={clsx("p-[14px] text-[#E1E1E6] w-fit", {
+      <p
+        className={clsx("p-[14px] text-[#E1E1E6] break-all", {
           ["rounded-r-lg rounded-bl-lg bg-[#633BBC] "]: isMessageOther,
           ["rounded-l-lg rounded-tr-lg bg-[#07847E] "]: !isMessageOther,
         })}
       >
         {textMessage}
-      </text>
+      </p>
     </div>
   );
 }

@@ -12,10 +12,11 @@ type User = {
   id: string;
   name: string;
   avatar: string;
+  status: "OFF" | "ON";
 };
 
 type AuthContextType = {
-  user: User | undefined;
+  user: User | null;
   signInWithGoogle: () => Promise<void>;
   signOutUser: () => Promise<void>;
 };
@@ -30,7 +31,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const { displayName, photoURL, uid } = user;
 
@@ -38,10 +39,15 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
           throw new Error("Missing information from Google Account.");
         }
 
+        await update(ref(db, `profiles/${uid}`), {
+          status: "ON",
+        });
+
         setUser({
           id: uid,
           name: displayName,
           avatar: photoURL,
+          status: "ON",
         });
       }
     });
@@ -66,12 +72,14 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         id: uid,
         name: displayName,
         avatar_url: photoURL,
+        status: "ON",
       });
 
       setUser({
         id: uid,
         name: displayName,
         avatar: photoURL,
+        status: "ON",
       });
     }
   }

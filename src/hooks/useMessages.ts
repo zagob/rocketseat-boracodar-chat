@@ -3,27 +3,40 @@ import { useEffect, useState } from "react";
 import { db } from "../services/firebase";
 import dayjs from "dayjs";
 
+type DatabaseMessages = Record<
+  string,
+  {
+    avatar_url: string;
+    id: string;
+    name: string;
+    messages: Record<
+      string,
+      {
+        created_at: Date;
+        text: string;
+      }
+    >;
+  }
+>;
+
+interface MessagesProps {
+  id: string;
+  name: string;
+  text: string;
+  avatar_url: string;
+  created_at: Date;
+}
+
 export function useMessages() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<MessagesProps[]>([]);
 
   useEffect(() => {
-    // const roomRef = ref(db, `anonymos-test`);
     const roomRef = ref(db, `profiles`);
 
     onValue(roomRef, (snapshot) => {
-      const databaseRoom = snapshot.val();
+      const databaseMessages: DatabaseMessages = snapshot.val();
 
-      const firebaseQuestions = databaseRoom?.questions ?? {};
-
-      console.log("firebaseMessages", firebaseQuestions);
-
-      //   console.log("databaseRoom", databaseRoom);
-      //   const firebaseQuestions = databaseRoom?.questions ?? {};
-
-      //   console.log("firebaseQuestions", firebaseQuestions);
-
-      // transformar um Objeto em Array
-      const messages = Object.entries(databaseRoom)
+      const messages = Object.entries(databaseMessages)
         .map(([key, valueProfile]) => {
           return {
             id: key,
@@ -44,16 +57,10 @@ export function useMessages() {
         })
         .map((message) => message.messages)
         .flat()
-        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        .sort(
+          (a, b) => dayjs(a.created_at).diff() - dayjs(b.created_at).diff()
+        );
 
-      console.log(
-        "split messages",
-        messages.map((message) => message.messages).flat()
-      );
-
-      //   console.log("parsedQuestion", parsedQuestion);
-
-      //   setTitle(databaseRoom?.title);
       setMessages(messages);
 
       return () => {
